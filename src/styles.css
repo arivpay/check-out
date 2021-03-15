@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; margin: 0;}
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: normal;
+    color: #252627;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    background-color: #ffe8f2;
+}
+
+.Loginfullpage {
+    width: 100%;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: cover;
+    padding-top: 0px;
+    background-image: url('assets/Login_bg.jpg');
+}
