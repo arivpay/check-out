@@ -1,17 +1,19 @@
 <div class="Loginpage">
-  <img src="../../assets/Arivpay_Logo_new.png" class="center"> 
+  <img src="assets/Arivpay_Logo_new.png" class="center"> 
+  <form [formGroup]="checkoutForm">
 	<div class="login-form">
         <h2 class="text-center">Ariv Pay - Check Out</h2><br>       
         <div>
-            <input class="form-control" placeholder = "Enter Amount in &#163;" type="text" required="required">
+            <input class="form-control" formControlName="amount" placeholder = "Enter Amount in &#163;" type="text" required="required">
         </div><br><br>
    
         <div>
-            <button type="submit" class="btn btn-primary">Check Out</button>&nbsp;
+            <button type="submit" class="btn btn-primary" (click)="transaction()">Check Out</button>&nbsp;
 			
         </div><br>
 		<div>
 		<a routerLink="/"><font color="white">Back To Home Page</font></a>
 		</div>
     </div>
+	</form>
 </div>
