@@ -14,6 +14,7 @@ export class PairComponent implements OnInit {
 
   pairingForm: any;
   base_URL: any; sub_URL: any; request_URL: any;
+  pax_sno: any;
   
   constructor(
   private _route: ActivatedRoute,
@@ -35,8 +36,19 @@ export class PairComponent implements OnInit {
     });
 	  
   }
-
- pairTerminal() {
+pairTerminal() {
+	this.http.get('https://www.arivpaysystem.com/api'+'/pax/serial_number', { params: {serial_number: this.pairingForm.value['serial_number']}})
+		.subscribe((response)=>{
+			this.pax_sno = response;
+			if(this.pax_sno.length != 0){
+				this.pairPAXTerminal();
+			} else {
+			this.toastr.error("Invalid Serial Number, Please Enter Valid Serial Number", '');
+			}			
+		});
+}
+	
+ pairPAXTerminal() {
 	  this.base_URL = 'https://'+ this.pairingForm.value['ip_address'] + ':8080/POSitiveWebLink/1.0.0';
 	  localStorage.setItem('base_URL' , this.base_URL);
 	  localStorage.setItem('terminal_id', this.pairingForm.value['serial_number']);

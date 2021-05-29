@@ -17,6 +17,8 @@ export class CheckoutComponent implements OnInit {
   public checkout_URL: any;
   public sub_URL: any;
   checkoutForm: any;
+  trans_amount:  any;
+  public key_value: String = '';
   
   constructor(private _route: ActivatedRoute,
   private router: Router, 
@@ -38,17 +40,33 @@ export class CheckoutComponent implements OnInit {
 	  
   }
   
+  getValue(value) {
+	  this.key_value = this.key_value + value;
+	  console.log(this.key_value);
+  }
+  addPeriod() {
+	  let n = this.key_value.includes(".");
+	  if(!n) {
+	  this.key_value = this.key_value + '.';
+	  console.log(this.key_value);
+	  }
+  }
+  delvalue() {
+	  this.key_value = this.key_value.slice(0,-1);
+  }
+
   transaction() {
 	this.sub_URL = '/transaction';
 	this.checkout_URL = this.base_URL+this.sub_URL+'?tid='+this.serial_number+'&silent=false';
-	
+	this.trans_amount = parseFloat(this.checkoutForm.value['amount'])*100;
+	console.log(this.trans_amount);
 	const headers= new HttpHeaders()
 		.set('Authorization', this.token)
 		.set('content-type', 'application/json')
 		
 	const data = JSON.stringify({
 		"transType":"SALE",
-		"amountTrans":this.checkoutForm.value['amount'],
+		"amountTrans":this.trans_amount,
 		"amountGratuity":0,
 		"amountCashback":0,
 		"reference":"TEST CARD",
@@ -74,20 +92,19 @@ export class CheckoutComponent implements OnInit {
 		.set('Authorization', this.token)
 		.set('content-type', 'application/json')
 	this.http.get(this.checkout_URL, { 'headers': headers }).subscribe((response)=>{
+		console.log(response);
+		console.log(Object.keys(response)[28], Object.values(response)[28]);
+		console.log(Object.values(response)[33]);
 		if(!Object.values(response)[33]) {
 			setTimeout(()=>{ this.transactionStatus()}, 2000);
 		} else {
-		console.log(response);
-		console.log(Object.values(response)[0]);
-		let statuses = JSON.parse(Object.values(response)[33]);
-		console.log(statuses);
-		if(statuses[4].statusDescription === 'Transaction Declined') {
-			this.toastr.error(statuses[4].statusDescription, '');
+		if(Object.values(response)[28] === true) {
+			this.toastr.success("Transaction Approved");
 			localStorage.removeItem('unique_id');
 			this.checkoutForm.reset();
 
 		} else {
-			this.toastr.success(statuses[4].statusDescription, '');
+			this.toastr.error("Transaction Declined");
 			localStorage.removeItem('unique_id');
 			this.checkoutForm.reset();
 		}
